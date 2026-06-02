@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">CinemaSessionApp</string>
+    <string name="main_title">Сеанси Кінотеатру</string>
+    <string name="cd_add_session">Додати сеанс</string>
+    <string name="msg_session_deleted">Сеанс видалено</string>
+
+    <string name="form_title">Дані сеансу</string>
+    <string name="hint_movie_title">Назва фільму</string>
+    <string name="hint_hall_name">Назва/номер залу</string>
+    <string name="hint_date_time">Дата та час (напр. 18:00)</string>
+    <string name="hint_ticket_price">Ціна квитка (грн)</string>
+    <string name="hint_duration">Тривалість фільму (хв)</string>
+    <string name="hint_description">Короткий опис фільму</string>
+    <string name="btn_save_session">Зберегти сеанс</string>
+
+    <string name="cd_edit">Редагувати</string>
+    <string name="cd_delete">Видалити</string>
+
+    <string name="error_empty_fields">Помилка в опрацюванні запиту: заповніть усі поля!</string>
+    <string name="error_invalid_data">Помилка в опрацюванні запиту: некоректні числові дані!</string>
+    <string name="error_general">Помилка в опрацюванні запиту</string>
+</resources>
