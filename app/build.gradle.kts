@@ -1,12 +1,12 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt") // Додали плагін для Room
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.cinemasessionapp"
-    compileSdk = 36 // Спростили запис версії, щоб не було помилок
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.cinemasessionapp"
@@ -38,7 +38,7 @@ android {
 }
 
 dependencies {
-    // Твої рідні залежності з каталогу libs (нічого не видаляємо)
+
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
