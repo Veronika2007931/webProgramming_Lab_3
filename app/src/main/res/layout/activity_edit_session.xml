@@ -23,7 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_movie_title"
-        android:inputType="textNormal"
+        android:inputType="text"
+        android:importantForAutofill="no"
         android:layout_marginBottom="16dp"/>
 
     <EditText
@@ -31,7 +32,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_hall_name"
-        android:inputType="textNormal"
+        android:inputType="text"
+        android:importantForAutofill="no"
         android:layout_marginBottom="16dp"/>
 
     <EditText
@@ -39,7 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_date_time"
-        android:inputType="textNormal"
+        android:inputType="date"
+        android:importantForAutofill="no"
         android:layout_marginBottom="16dp"/>
 
     <EditText
@@ -48,6 +51,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_ticket_price"
         android:inputType="numberDecimal"
+        android:importantForAutofill="no"
         android:layout_marginBottom="16dp"/>
 
     <EditText
@@ -56,6 +60,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_duration"
         android:inputType="number"
+        android:importantForAutofill="no"
         android:layout_marginBottom="16dp"/>
 
     <EditText
@@ -66,6 +71,7 @@
         android:inputType="textMultiLine"
         android:lines="3"
         android:gravity="top"
+        android:importantForAutofill="no"
         android:layout_marginBottom="24dp"/>
 
     <Button
