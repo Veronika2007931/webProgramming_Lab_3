@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class SessionAdapter(
+    private val onItemClick: (MovieSession) -> Unit,
     private val onEditClick: (MovieSession) -> Unit,
     private val onDeleteClick: (MovieSession) -> Unit
 ) : RecyclerView.Adapter<SessionAdapter.SessionViewHolder>() {
@@ -28,21 +29,27 @@ class SessionAdapter(
     }
 
     override fun onBindViewHolder(holder: SessionViewHolder, position: Int) {
+        val context = holder.itemView.context
         val currentSession = sessionsList[position]
 
-        // Тут ми динамічно вставляємо дані з БД в XML без жодного хардкоду
         holder.tvMovieTitle.text = currentSession.movieTitle
-        holder.tvDetails.text = "Зал: ${currentSession.hallName} | Час: ${currentSession.dateTime}"
-        holder.tvPrice.text = "Ціна: ${currentSession.ticketPrice} грн"
 
-        // Обробка кліків на кнопки редагування та видалення
+        holder.tvDetails.text = context.getString(
+            R.string.template_session_details,
+            currentSession.hallName,
+            currentSession.movieDate,
+            currentSession.dateTime
+        )
+
+        holder.tvPrice.text = context.getString(R.string.template_session_price, currentSession.ticketPrice)
+
+        holder.itemView.setOnClickListener { onItemClick(currentSession) }
         holder.btnEdit.setOnClickListener { onEditClick(currentSession) }
         holder.btnDelete.setOnClickListener { onDeleteClick(currentSession) }
     }
 
     override fun getItemCount(): Int = sessionsList.size
 
-    // Метод для оновлення списку даних
     fun setData(newSessions: List<MovieSession>) {
         this.sessionsList = newSessions
         notifyDataSetChanged()

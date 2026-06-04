@@ -2,6 +2,8 @@ package com.example.cinemasessionapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,60 +14,69 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
     private lateinit var adapter: SessionAdapter
+    private lateinit var tvEmptyState: TextView
+    private lateinit var rvSessions: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 1. Підключаємо базу даних
         db = AppDatabase.getDatabase(this)
+        tvEmptyState = findViewById(R.id.tvEmptyState)
+        rvSessions = findViewById(R.id.rvSessions)
 
-        // 2. Ініціалізуємо список (RecyclerView)
-        val rvSessions = findViewById<RecyclerView>(R.id.rvSessions)
         rvSessions.layoutManager = LinearLayoutManager(this)
 
-        // 3. Налаштовуємо адаптер та обробку кнопок Редагувати й Видалити
         adapter = SessionAdapter(
+            onItemClick = { session ->
+                val intent = Intent(this, SessionDetailActivity::class.java).apply {
+                    putExtra(AppDatabase.KEY_SESSION_ID, session.id)
+                }
+                startActivity(intent)
+            },
             onEditClick = { session ->
-                // При кліку на редагування — відкриваємо друге вікно й передаємо ID сеансу
-                val intent = Intent(this, EditSessionActivity::class.java)
-                intent.putExtra("SESSION_ID", session.id)
+                val intent = Intent(this, EditSessionActivity::class.java).apply {
+                    putExtra(AppDatabase.KEY_SESSION_ID, session.id)
+                }
                 startActivity(intent)
             },
             onDeleteClick = { session ->
-                // При кліку на видалення — видаляємо з БД та оновлюємо екран
                 try {
                     db.sessionDao().deleteSession(session)
                     Toast.makeText(this, getString(R.string.msg_session_deleted), Toast.LENGTH_SHORT).show()
                     loadSessionsFromDatabase()
                 } catch (e: Exception) {
-                    Toast.makeText(this, getString(R.string.error_general), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.error_db_load), Toast.LENGTH_SHORT).show()
                 }
             }
         )
         rvSessions.adapter = adapter
 
-        // 4. Кнопка додавання нового сеансу (плюсик)
-        val fabAddSession = findViewById<FloatingActionButton>(R.id.fabAddSession)
-        fabAddSession.setOnClickListener {
-            val intent = Intent(this, EditSessionActivity::class.java)
-            startActivity(intent)
+        findViewById<FloatingActionButton>(R.id.fabAddSession).setOnClickListener {
+            startActivity(Intent(this, EditSessionActivity::class.java))
         }
     }
 
-    // Оновлюємо дані на екрані щоразу, коли повертаємось у це вікно
     override fun onResume() {
         super.onResume()
         loadSessionsFromDatabase()
     }
 
-    // Функція, яка витягує всі записи з SQLite
     private fun loadSessionsFromDatabase() {
         try {
             val sessions = db.sessionDao().getAllSessions()
             adapter.setData(sessions)
+
+            if (sessions.isEmpty()) {
+                tvEmptyState.visibility = View.VISIBLE
+                rvSessions.visibility = View.GONE
+            } else {
+                tvEmptyState.visibility = View.GONE
+                rvSessions.visibility = View.VISIBLE
+            }
         } catch (e: Exception) {
-            Toast.makeText(this, "Помилка в опрацюванні запиту", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+            Toast.makeText(this, getString(R.string.error_db_load), Toast.LENGTH_LONG).show()
         }
     }
 }

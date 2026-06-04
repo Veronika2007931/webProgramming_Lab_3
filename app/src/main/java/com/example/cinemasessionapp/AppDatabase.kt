@@ -5,12 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [MovieSession::class], version = 1, exportSchema = false)
+@Database(entities = [MovieSession::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun sessionDao(): SessionDao
 
     companion object {
+        const val KEY_SESSION_ID = "SESSION_ID" // Ключ для Intent винесено сюди
+
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
@@ -21,7 +23,8 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "cinema_database"
                 )
-                    .allowMainThreadQueries() // Для швидкої здачі лаби в універі
+                    .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
                 instance

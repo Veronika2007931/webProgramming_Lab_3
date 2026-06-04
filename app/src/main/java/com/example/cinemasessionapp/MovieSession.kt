@@ -8,7 +8,8 @@ data class MovieSession(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val movieTitle: String,
     val hallName: String,
-    val dateTime: String,
+    val movieDate: String, // Нове поле для дати
+    val dateTime: String,  // Це залишається для часу (напр. "18:00")
     val ticketPrice: Double,
     val duration: Int,
     val description: String

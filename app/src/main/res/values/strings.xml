@@ -1,22 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">CinemaSessionApp</string>
     <string name="main_title">Сеанси Кінотеатру</string>
     <string name="cd_add_session">Додати сеанс</string>
-    <string name="msg_session_deleted">Сеанс видалено</string>
+    <string name="cd_edit">Редагувати</string>
+    <string name="cd_delete">Видалити</string>
+
 
     <string name="form_title">Дані сеансу</string>
     <string name="hint_movie_title">Назва фільму</string>
     <string name="hint_hall_name">Назва/номер залу</string>
+    <string name="hint_movie_date">Дата сеансу (напр. 04.06.2026)</string>
     <string name="hint_date_time">Дата та час (напр. 18:00)</string>
     <string name="hint_ticket_price">Ціна квитка (грн)</string>
     <string name="hint_duration">Тривалість фільму (хв)</string>
     <string name="hint_description">Короткий опис фільму</string>
     <string name="btn_save_session">Зберегти сеанс</string>
 
-    <string name="cd_edit">Редагувати</string>
-    <string name="cd_delete">Видалити</string>
 
     <string name="error_empty_fields">Помилка в опрацюванні запиту: заповніть усі поля!</string>
     <string name="error_invalid_data">Помилка в опрацюванні запиту: некоректні числові дані!</string>
     <string name="error_general">Помилка в опрацюванні запиту</string>
+    <string name="msg_session_deleted">Сеанс видалено</string>
+
+
+    <string name="error_invalid_price">Помилка в опрацюванні запиту: ціна квитка має бути більшою за 0 грн!</string>
+    <string name="error_invalid_duration">Помилка в опрацюванні запиту: тривалість фільму має бути більшою за 0 хв!</string>
+    <string name="error_invalid_hall">Помилка в опрацюванні запиту: номер залу не може бути більшим за 12!</string>
+    <string name="error_past_date">Помилка в опрацюванні запиту: не можна призначити сеанс на минулу дату!</string>
+    <string name="error_date_format">Помилка в опрацюванні запиту: некоректний формат дати! Використовуйте ДД.ММ.РРРР</string>
+    <string name="error_duplicate_session">Помилка в опрацюванні запиту: такий сеанс уже існує в розкладі!</string>
+    <string name="error_db_load">Помилка бази даних. Спробуйте Clear Storage!</string>
+
+
+    <string name="msg_session_updated">Сеанс успішно оновлено!</string>
+    <string name="msg_session_added">Сеанс успішно додано!</string>
+
+
+    <string name="template_session_details">Зал: %1$s | Дата: %2$s | Час: %3$s</string>
+    <string name="template_session_price">Ціна: %1$.2f грн</string>
+    <string name="template_detail_hall">Зал: %1$s</string>
+    <string name="template_detail_datetime">Дата: %1$s | Час: %2$s</string>
+    <string name="template_detail_duration">Тривалість: %1$d хв.</string>
+    <string name="template_detail_price">Ціна квитка: %1$.2f грн</string>
 </resources>
