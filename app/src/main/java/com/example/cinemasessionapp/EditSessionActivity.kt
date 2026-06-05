@@ -15,11 +15,6 @@ class EditSessionActivity : AppCompatActivity() {
     private var sessionId: Int = 0
     private var isEditMode = false
 
-    companion object {
-        private const val MAX_HALL_COUNT = 12
-        private const val DATE_PATTERN = "dd.MM.yyyy"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_session)
@@ -35,11 +30,12 @@ class EditSessionActivity : AppCompatActivity() {
         val etDescription = findViewById<EditText>(R.id.etDescription)
         val btnSave = findViewById<Button>(R.id.btnSave)
 
-        if (intent.hasExtra(AppDatabase.KEY_SESSION_ID)) {
+        if (intent.hasExtra("SESSION_ID")) {
             isEditMode = true
-            sessionId = intent.getIntExtra(AppDatabase.KEY_SESSION_ID, 0)
+            sessionId = intent.getIntExtra("SESSION_ID", 0)
 
-            db.sessionDao().getSessionById(sessionId)?.let {
+            val session = db.sessionDao().getSessionById(sessionId)
+            session?.let {
                 etMovieTitle.setText(it.movieTitle)
                 etHallName.setText(it.hallName)
                 etMovieDate.setText(it.movieDate)
@@ -59,64 +55,87 @@ class EditSessionActivity : AppCompatActivity() {
             val durationStr = etDuration.text.toString().trim()
             val desc = etDescription.text.toString().trim()
 
+
             if (title.isEmpty() || hall.isEmpty() || dateStr.isEmpty() || time.isEmpty() ||
                 priceStr.isEmpty() || durationStr.isEmpty() || desc.isEmpty()) {
-                Toast.makeText(this, getString(R.string.error_empty_fields), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Не вдалося зберегти: заповніть усі поля!", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+
 
             val price = priceStr.toDoubleOrNull()
             val duration = durationStr.toIntOrNull()
 
+
             if (price == null || price <= 0) {
-                Toast.makeText(this, getString(R.string.error_invalid_price), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Помилка: Ціна квитка має бути більшою за 0 грн!", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
             if (duration == null || duration <= 0) {
-                Toast.makeText(this, getString(R.string.error_invalid_duration), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Помилка: Тривалість фільму має бути більшою за 0 хв!", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            val hallNumbers = hall.filter { it.isDigit() }
+            val hallNumber = hallNumbers.toIntOrNull()
+
+            if (hallNumber != null && hallNumber > 12) {
+                Toast.makeText(this, "Помилка: Номер залу не може бути більшим за 12!", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            val hallNumber = hall.filter { it.isDigit() }.toIntOrNull()
-            if (hallNumber != null && hallNumber > MAX_HALL_COUNT) {
-                Toast.makeText(this, getString(R.string.error_invalid_hall), Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
 
             try {
-                val formatter = DateTimeFormatter.ofPattern(DATE_PATTERN)
+
+                val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
                 val inputDate = LocalDate.parse(dateStr, formatter)
-                if (inputDate.isBefore(LocalDate.now())) {
-                    Toast.makeText(this, getString(R.string.error_past_date), Toast.LENGTH_LONG).show()
+                val today = LocalDate.now()
+
+
+                if (inputDate.isBefore(today)) {
+                    Toast.makeText(this, "Помилка: Не можна призначити сеанс на минулу дату!", Toast.LENGTH_LONG).show()
                     return@setOnClickListener
                 }
             } catch (e: DateTimeParseException) {
-                Toast.makeText(this, getString(R.string.error_date_format), Toast.LENGTH_LONG).show()
+
+                Toast.makeText(this, "Некоректний формат дати! Використовуйте ДД.ММ.РРРР (напр. 04.06.2026)", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
             val isDuplicate = db.sessionDao().isSessionDuplicate(
-                title, hall, dateStr, time, price, duration, desc
+                title = title,
+                hall = hall,
+                date = dateStr,
+                time = time,
+                price = price,
+                duration = duration,
+                desc = desc
             )
 
-            if (isDuplicate && !isEditMode) {
-                Toast.makeText(this, getString(R.string.error_duplicate_session), Toast.LENGTH_LONG).show()
+            if (isDuplicate) {
+                Toast.makeText(this, "Такий сеанс уже існує в розкладі!", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
+
             val session = MovieSession(
                 id = if (isEditMode) sessionId else 0,
-                movieTitle = title, hallName = hall, movieDate = dateStr, dateTime = time,
-                ticketPrice = price, duration = duration, description = desc
+                movieTitle = title,
+                hallName = hall,
+                movieDate = dateStr,
+                dateTime = time,
+                ticketPrice = price,
+                duration = duration,
+                description = desc
             )
 
             if (isEditMode) {
                 db.sessionDao().updateSession(session)
-                Toast.makeText(this, getString(R.string.msg_session_updated), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Сеанс оновлено!", Toast.LENGTH_SHORT).show()
             } else {
                 db.sessionDao().insertSession(session)
-                Toast.makeText(this, getString(R.string.msg_session_added), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Сеанс додано!", Toast.LENGTH_SHORT).show()
             }
+
             finish()
         }
     }

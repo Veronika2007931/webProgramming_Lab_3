@@ -11,7 +11,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
 
     companion object {
-        const val KEY_SESSION_ID = "SESSION_ID" // Ключ для Intent винесено сюди
+        const val KEY_SESSION_ID = "SESSION_ID"
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
